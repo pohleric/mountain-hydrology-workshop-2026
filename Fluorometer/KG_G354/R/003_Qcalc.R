@@ -112,7 +112,7 @@ setwd(path)
 # source('../R/FUN_install_packages.R')
 M = Standard * TracerVolume * 1000 # to mg
 # Source all functions for cleaning and preparation
-source('../0_R-FUN/FUN_curve-processing.R')
+source('../0_R-FUN/FUN_curve-processing-fixedCalibrationLiquid.R')
 
 # ------- READ DATA ------- #
 # d_ = read.xlsx(sheetName = sheet_name,  # this one needs to be changed to read in the different sheets,
