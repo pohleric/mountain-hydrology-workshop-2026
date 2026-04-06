@@ -2,7 +2,7 @@
 
 
 # Arguments
-path = "/Users/pohle/Dropbox/Central_Asia/Fluorometer/2023/G354/data/"
+path = "/mnt/f/Dropbox/Institute/Fribourg/Teaching/mountain-hydrology-workshop-2026Fluorometer/2023/G354/data/"
 
 # ------ INPUT FILES -------
 # HOBO water level logger file (corrected for atmospheric pressure)

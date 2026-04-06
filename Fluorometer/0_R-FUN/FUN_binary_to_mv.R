@@ -2,15 +2,15 @@
 
 bit_to_mv = function(data_file, sep=NULL){
   # data_file = 'tests/_20210701-03-f1664.txt'
-  # data_file = '/Users/pohle/Dropbox/Central_Asia/Fluorometer/2024/Abramov/data/f1664_2024_Abr.txt'
+  # data_file = '/mnt/f/Dropbox/Institute/Fribourg/Teaching/mountain-hydrology-workshop-2026Fluorometer/2024/Abramov/data/f1664_2024_Abr.txt'
   # data_file = paste0(path, filename_raw)
   # data_file = '/Users/pohle/Dropbox/FL30/CALIBRAT_1993/backup_2025-07-06/test/part1.txt'
   # sep=','
   # data_file = paste0(path, filename_raw)
   # # ---------------- RAW ------------------------- #
   # bd = read.table('tests/_20210701-03-f1664.txt')
-  # data_file = "/Users/pohle/Dropbox/Central_Asia/Fluorometer/2023/Zulmart/data/f900 2_2.csv"
-  # data_file = "/Users/pohle/Dropbox/Central_Asia/HOBO/summer_school_Suyek/data/FL30-binary_f1664.txt"
+  # data_file = "/mnt/f/Dropbox/Institute/Fribourg/Teaching/mountain-hydrology-workshop-2026Fluorometer/2023/Zulmart/data/f900 2_2.csv"
+  # data_file = "/mnt/f/Dropbox/Institute/Fribourg/Teaching/mountain-hydrology-workshop-2026HOBO/summer_school_Suyek/data/FL30-binary_f1664.txt"
   if(length(sep) == 0){
     bd = read.table(data_file)  
   }else if(sep==','){
@@ -73,8 +73,8 @@ bit_to_mv = function(data_file, sep=NULL){
 }
 
 bit_to_mv_30sec = function(data_file){
-  # data_file = '/Users/pohle/Dropbox/Central_Asia/Fluorometer/2022/raw/f1664_30sec-Abramov.txt'
-  # data_file = '/Users/pohle/Dropbox/Central_Asia/Fluorometer/2022/raw/f1664_Abramov.txt'
+  # data_file = '/mnt/f/Dropbox/Institute/Fribourg/Teaching/mountain-hydrology-workshop-2026Fluorometer/2022/raw/f1664_30sec-Abramov.txt'
+  # data_file = '/mnt/f/Dropbox/Institute/Fribourg/Teaching/mountain-hydrology-workshop-2026Fluorometer/2022/raw/f1664_Abramov.txt'
   # ---------------- RAW ------------------------- #
   # bd = read.table('tests/_20210701-03-f1664.txt')
   bd = read.table(data_file)

@@ -4,7 +4,7 @@ require(readxl)
 require(lubridate)
 
 # Arguments
-path = "/Users/pohle/Dropbox/Central_Asia/Fluorometer/2023/G354/data/"
+path = "/mnt/f/Dropbox/Institute/Fribourg/Teaching/mountain-hydrology-workshop-2026Fluorometer/2023/G354/data/"
 
 Standard = 50        # g/l - The concentration of the color tracer (Standard solution)
 TracerVolume = 0.1  # l - How many liters! were injected into the river?

@@ -3,7 +3,8 @@ import pandas as pd
 import yaml
 import re
 from pathlib import Path
-
+import matplotlib
+# matplotlib.use('TkAgg')
 
 class WaterLevelHomogenizer:
     def __init__(self, param_file):
@@ -70,13 +71,22 @@ class WaterLevelHomogenizer:
             norm[sk] = info
         return norm
 
+   
     @staticmethod
     def write_to_csv(dataset, output_filename):
-        import copy
-        df_out = copy.copy(dataset)
+        from pathlib import Path
+
+        output_path = Path(output_filename)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+
+        df_out = dataset.copy()
+
         df_out['datetime'] = df_out['datetime'].dt.strftime('%Y-%m-%dT%H:%M:%S%z')
-        df_out['datetime'] = df_out['datetime'].str.replace(r'([+-]\d{2})(\d{2})$', r'\1:\2', regex=True)
-        df_out.to_csv(output_filename, index=False)
+        df_out['datetime'] = df_out['datetime'].str.replace(
+            r'([+-]\d{2})(\d{2})$', r'\1:\2', regex=True
+        )
+
+        df_out.to_csv(output_path, index=False)
 
     @staticmethod
     def extract_years(filename, only_start=False):
@@ -195,6 +205,8 @@ class WaterLevelHomogenizer:
             unit = unit_match.group(1)
             conversion = self.pressure_to_cmH2O.get(unit, None)
         elif unit_match2:
+            unit = unit_match2.group(1)
+            conversion = self.pressure_to_cmH2O.get(unit, None)
         else:
             raise ValueError(f"No unit information found for pressure. Please check input file {filepath}")
 
@@ -496,36 +508,43 @@ class WaterLevelHomogenizer:
         self.df_final = self.adjust_base_level(self.df_corr, station_key, year)
         self.results[station_key, int(year)] = self.df_final
         return self.df_final
-
-    def plot_ts_single_year(self, station_key, year):
+    
+    
+    def plot_ts_single_year(self, station_key, year, figure_dir=None, show_plot=True):
         import matplotlib.pyplot as plt
         import matplotlib.dates as mdates
+        from pathlib import Path
 
         fig, ax = plt.subplots(figsize=(12, 6))
         meta = self.base_level_metadata.get((station_key, year), {})
         LW = 0.4
+
         # Primary axis: water level
-        self.df_final.plot(x="datetime", y="wl_final", legend=False, ax=ax, linewidth=LW, color='b',
-                                label="Water level [cm]")
+        self.df_final.plot(
+            x="datetime", y="wl_final", legend=False, ax=ax,
+            linewidth=LW, color='b', label="Water level [cm]"
+        )
         ax.set_ylabel("Water level [cm]", color='b')
 
         # Secondary axis: temperature
         ax2 = ax.twinx()
         colax2 = "#33333377"
-        self.df_final.plot(x="datetime", y="temp", legend=False, ax=ax2, linewidth=LW, color=colax2,
-                                  label="Temperature [°C]", zorder=1)
+        self.df_final.plot(
+            x="datetime", y="temp", legend=False, ax=ax2,
+            linewidth=LW, color=colax2, label="Temperature [°C]", zorder=1
+        )
         ax2.set_ylabel("Temperature [°C]", color=colax2)
         ax2.set_ylim(-1, 10)
         ax2.axhline(0, color=colax2, linestyle=':', label="", zorder=1)
 
-        # Axis tick colors
         ax.tick_params(axis='y', colors='b')
         ax2.tick_params(axis='y', colors=colax2)
 
-        # Monthly ticks
-        months = pd.date_range(self.df_final['datetime'].min().normalize(),
-                               self.df_final['datetime'].max().normalize(),
-                               freq='MS', tz="UTC")
+        months = pd.date_range(
+            self.df_final['datetime'].min().normalize(),
+            self.df_final['datetime'].max().normalize(),
+            freq='MS', tz="UTC"
+        )
         ax.xaxis.set_minor_locator(plt.NullLocator())
         ax.xaxis.set_major_locator(mdates.MonthLocator())
         ax.set_xticks(months)
@@ -533,48 +552,39 @@ class WaterLevelHomogenizer:
         ax.set_xlabel("")
         ax.axhline(0, color='b', linestyle=':')
 
-        # Plot base level reference info
-        extra_handles = []
-        extra_labels = []
-        if meta.get('level') and meta.get('date'):
-            l_base = ax.axhline(meta['level'], color='r', linestyle='--', label='Base level')
-            extra_handles.append(l_base)
-            extra_labels.append('Base level')
-            if meta.get('uncertainty'):
-                l_unc = ax.axhspan(meta['level'] - meta['uncertainty'], meta['level'] + meta['uncertainty'],
-                                   color='r', alpha=0.15, label="Base level uncertainty", zorder=-10)
-                extra_handles.append(l_unc)
-                extra_labels.append('Base level uncertainty')
-            l_date = ax.axvline(pd.Timestamp(meta['date']), color='k', linestyle=':', label='Base level date')
-            extra_handles.append(l_date)
-            extra_labels.append('Base level date')
-
-        # Combine handles from both y-axes for legend
         lines1, labels1 = ax.get_legend_handles_labels()
         lines2, labels2 = ax2.get_legend_handles_labels()
-        ax.legend(lines1 + lines2, labels1 + labels2) #, loc='upper left'
+        ax.legend(lines1 + lines2, labels1 + labels2)
         ax.set_title(f"{station_key} - {year}")
         plt.tight_layout()
-        plt.show()
-        plt.savefig(f'figures/{year}_{station_key}_water-level-plot.pdf')
-        plt.close()
 
+        if figure_dir is None:
+            figure_dir = Path.cwd() / "DISCHARGE" / "figures"
+        else:
+            figure_dir = Path(figure_dir)
+
+        figure_dir.mkdir(parents=True, exist_ok=True)
+        fig_path = figure_dir / f"{year}_{station_key}_water-level-plot.pdf"
+        plt.savefig(fig_path)
+        print(f"Figure written to: {fig_path.resolve()}")
+        if show_plot:
+            plt.show()
+        else:
+            plt.close()
+
+    
     @staticmethod
-    def plot_ts_multi_years(h, df, station_key, close=False, legend_location='upper left'):
+    def plot_ts_multi_years(h, df, station_key, figure_dir=None,  show_plot=True, legend_location='upper left'):
         """
-        Plot concatenated multi-year time series for a station, with:
-        - wl_final on primary y-axis
-        - temp on secondary y-axis
-        - All used base-level calibration points from h.base_level_metadata (red).
-        - All original base_levels from the param file (orange).
+        Plot concatenated multi-year time series for a station.
         """
         import matplotlib.pyplot as plt
         import matplotlib.dates as mdates
+        from pathlib import Path
 
         fig, ax = plt.subplots(figsize=(12, 6))
         LW = 0.4
 
-        # --- primary axis: water level ---
         x = df['datetime']
         y = df["wl_final"]
         y2 = df["temp"]
@@ -582,7 +592,6 @@ class WaterLevelHomogenizer:
         ax.plot(x.values, y.values, linewidth=LW, color='b', label="Water level [cm]", zorder=4)
         ax.set_ylabel("Water level [cm]", color='b')
 
-        # --- secondary axis: temperature ---
         ax2 = ax.twinx()
         colax2 = "#33333355"
         ax2.plot(x.values, y2.values, linewidth=LW, color=colax2, label="Temperature [°C]", zorder=-1)
@@ -590,11 +599,9 @@ class WaterLevelHomogenizer:
         ax2.set_ylim(-1, 10)
         ax2.axhline(0, color=colax2, linestyle=':', label="")
 
-        # Axis tick colors
         ax.tick_params(axis='y', colors='b')
         ax2.tick_params(axis='y', colors=colax2)
 
-        # --- monthly ticks ---
         months = pd.date_range(
             df['datetime'].min().normalize(),
             df['datetime'].max().normalize(),
@@ -608,9 +615,6 @@ class WaterLevelHomogenizer:
         ax.set_xlabel("")
         ax.axhline(0, color='b', linestyle=':', zorder=4)
 
-        # ------------------------------------------------------------------
-        # 1) USED calibration points from base_level_metadata  (RED)
-        # ------------------------------------------------------------------
         station_meta = {
             (st, yr): meta
             for (st, yr), meta in h.base_level_metadata.items()
@@ -647,40 +651,22 @@ class WaterLevelHomogenizer:
                 dt = row['date']
                 if pd.isna(lvl) or pd.isna(dt):
                     continue
-                #
-                # # make dt naive UTC for plotting
-                # if hasattr(dt, "tzinfo") and dt.tzinfo is not None:
-                #     dt_plot = dt.tz_convert('UTC').tz_localize(None)
-                # else:
-                #     dt_plot = dt
-                # dt_plot = pd.Timestamp(dt_plot)
-                dt_plot = dt
-                dt_plot = pd.Timestamp(dt_plot)
 
+                dt_plot = pd.Timestamp(dt)
                 ax.plot(dt_plot, lvl, marker='o', color='r', markersize=6, mfc='none', zorder=5)
                 if j == first_idx_used:
-                    ax.axvline(
-                        dt_plot, color='r', linestyle='--',
-                        label='$in situ$ (used)', linewidth=.5
-                    )
+                    ax.axvline(dt_plot, color='r', linestyle='--', label='$in situ$ (used)', linewidth=.5)
                 else:
-                    ax.axvline(
-                        dt_plot, color='r', linestyle='--', linewidth=.5, zorder=5
-                    )
+                    ax.axvline(dt_plot, color='r', linestyle='--', linewidth=.5, zorder=5)
 
-        # ------------------------------------------------------------------
-        # 2) ORIGINAL base_levels from YAML  (ORANGE)
-        # ------------------------------------------------------------------
         info = h.get_station_info(station_key)
         orig_rows = []
         base_levels_all = info.get('base_levels', {})
         base_dates_all = info.get('base_level_dates', {})
 
         for year, levels_list in base_levels_all.items():
-            # levels_list and dates_list are lists by construction of _normalize_station_params
             levels_list = levels_list or []
             dates_list = base_dates_all.get(year, []) or []
-            # zip -> one point per original (level, date) pair
             for lvl, dt_str in zip(levels_list, dates_list):
                 try:
                     dt = pd.to_datetime(dt_str)
@@ -709,30 +695,33 @@ class WaterLevelHomogenizer:
 
                 ax.plot(dt_plot, lvl, marker='x', color='orange', markersize=5, mfc='none', zorder=3)
                 if j == first_idx_orig:
-                    ax.axvline(
-                        dt_plot, color='orange', linestyle=':',
-                        label='original base level', linewidth=.7
-                    )
+                    ax.axvline(dt_plot, color='orange', linestyle=':', label='original base level', linewidth=.7)
                 else:
-                    ax.axvline(
-                        dt_plot, color='orange', linestyle=':', linewidth=.7, zorder=3
-                    )
+                    ax.axvline(dt_plot, color='orange', linestyle=':', linewidth=.7, zorder=3)
 
-        # --- legend ---
         lines1, labels1 = ax.get_legend_handles_labels()
         lines2, labels2 = ax2.get_legend_handles_labels()
         leg = ax.legend(lines1 + lines2, labels1 + labels2,
-                        facecolor='white', framealpha=1.0,loc=legend_location)
+                        facecolor='white', framealpha=1.0, loc=legend_location)
         leg.set_zorder(10)
-        # Make sure frame is fully opaque
         frame = leg.get_frame()
         frame.set_alpha(1.0)
 
         ax.set_title(f"{station_key}")
         plt.tight_layout()
-        plt.show()
-        plt.savefig(f'figures/{station_key}_water-level-plot.pdf')
-        if close:
+
+        if figure_dir is None:
+            figure_dir = Path.cwd() / "DISCHARGE" / "figures"
+        else:
+            figure_dir = Path(figure_dir)
+
+        figure_dir.mkdir(parents=True, exist_ok=True)
+        fig_path = figure_dir / f"{station_key}_water-level-plot.pdf"
+        plt.savefig(fig_path)
+        print(f"Figure written to: {fig_path.resolve()}")
+        if show_plot:
+            plt.show()
+        else:
             plt.close()
 
     def concatenate_series_with_baselevel(self, station):
@@ -936,3 +925,88 @@ class WaterLevelHomogenizer:
         # Restore DataFrame format
         return df_full.reset_index()
 
+
+    def run_station(
+        self,
+        station,
+        output_csv=None,
+        figure_dir=None,
+        plot_single_years=True,
+        plot_multi_year=True,
+        return_concat=True,
+        show_plots=True,
+    ):
+        """
+        Run the full homogenization workflow for one station.
+
+        Parameters
+        ----------
+        station : str
+            Station key defined in the YAML file.
+        output_csv : str | Path | None
+            Optional custom output CSV path.
+            If None, defaults to:
+            ./DISCHARGE/L3/{station}_cat_df.csv
+        figure_dir : str | Path | None
+            Optional custom figure output directory.
+            If None, defaults to:
+            ./DISCHARGE/figures/
+        plot_single_years : bool
+            Whether to plot each yearly segment. Default True.
+        plot_multi_year : bool
+            Whether to plot the concatenated multi-year series. Default True.
+        return_concat : bool
+            Whether to return the concatenated dataframe. Default True.
+        show_plots : bool
+            Whether to display plots in Jupyter while running the workflow.
+            If False, plots are only saved and not shown.
+        """
+        from pathlib import Path
+
+        print(f"################### {station} ###################")
+
+        years = sorted(list(self.get_station_info(station)["base_levels"].keys()))
+
+        processed_years = []
+        for year in years:
+            df_final = self.process_year(station, year)
+            if df_final is not None:
+                processed_years.append(year)
+                if plot_single_years:
+                    self.plot_ts_single_year(
+                        station,
+                        year,
+                        figure_dir=figure_dir,
+                        show_plot=show_plots,
+                    )
+
+        if not processed_years:
+            print(f"No valid yearly segments were processed for station {station}.")
+            return None
+
+        cat_df = self.concatenate_series_with_baselevel(station=station)
+        if cat_df is None:
+            print(f"Concatenation failed for station {station}.")
+            return None
+
+        if output_csv is None:
+            output_csv = Path.cwd() / "DISCHARGE" / "L3" / f"{station}_cat_df.csv"
+        else:
+            output_csv = Path(output_csv)
+
+        output_csv.parent.mkdir(parents=True, exist_ok=True)
+        self.write_to_csv(cat_df, output_csv)
+        print(f"Output written to: {output_csv.resolve()}")
+
+        if plot_multi_year:
+            self.plot_ts_multi_years(
+                self,
+                cat_df,
+                station,
+                figure_dir=figure_dir,
+                show_plot=show_plots,
+            )
+
+        if return_concat:
+            return cat_df
+        return None

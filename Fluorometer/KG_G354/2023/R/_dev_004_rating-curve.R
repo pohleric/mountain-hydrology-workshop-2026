@@ -2,7 +2,7 @@
 
 
 # Arguments
-path = "/Users/pohle/Dropbox/Central_Asia/HOBO/summer_school_Suyek/data/"
+path = "/mnt/f/Dropbox/Institute/Fribourg/Teaching/mountain-hydrology-workshop-2026HOBO/summer_school_Suyek/data/"
 
 # ------ INPUT FILES -------
 # HOBO water level logger file (corrected for atmospheric pressure)

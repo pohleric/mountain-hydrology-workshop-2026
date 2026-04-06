@@ -1,21 +1,21 @@
-# TODOs:
-- Create renkulab environment (python, basic, 0.5 CPU, 2GB Ram)
-- Install the few libraries (requirements.txt)
+# # TODOs:
+# - Create renkulab environment (python, basic, 0.5 CPU, 2GB Ram)
+# - Install the few libraries (requirements.txt)
 
-For the Code:
-- Create 1 Jupyter notebook
-- import the class
-- showcase the full homogenisation
-- showcase steps (single "year"(file) case) with single year plot
-- all year case with multi_year_plot
+# For the Code:
+# - Create 1 Jupyter notebook
+# - import the class
+# - showcase the full homogenisation
+# - showcase steps (single "year"(file) case) with single year plot
+# - all year case with multi_year_plot
 
-- highlight that specific filename format is required so that the "extract_XX" functions find the right file
--- must include the kyewords "(atmo|water|cond)", year ("\d{4})-(\d{4}") and processing level L0,1,2,3,4 "L([1234]"
+# - highlight that specific filename format is required so that the "extract_XX" functions find the right file
+# -- must include the kyewords "(atmo|water|cond)", year ("\d{4})-(\d{4}") and processing level L0,1,2,3,4 "L([1234]"
 
-To Fix:
-- fig save not working - not necessary if in jupyter notebook
-- divide code - exernal file for Class and all functions; not shown to the participants.
-- one hardcoded date 2024-08-xx in this code.. not clear where this is from
+# To Fix:
+# - fig save not working - not necessary if in jupyter notebook
+# - divide code - exernal file for Class and all functions; not shown to the participants.
+# - one hardcoded date 2024-08-xx in this code.. not clear where this is from
 
 
 
@@ -48,13 +48,24 @@ class WaterLevelHomogenizer:
         }
         self.base_level_metadata = {}  # stores info for each station/year
 
+  
+   
     @staticmethod
     def write_to_csv(dataset, output_filename):
         import copy
+        from pathlib import Path
+
+        output_path = Path(output_filename)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+
         df_out = copy.copy(dataset)
+
         df_out['datetime'] = df_out['datetime'].dt.strftime('%Y-%m-%dT%H:%M:%S%z')
-        df_out['datetime'] = df_out['datetime'].str.replace(r'([+-]\d{2})(\d{2})$', r'\1:\2', regex=True)
-        df_out.to_csv(output_filename, index=False)
+        df_out['datetime'] = df_out['datetime'].str.replace(
+            r'([+-]\d{2})(\d{2})$', r'\1:\2', regex=True
+        )
+
+        df_out.to_csv(output_path, index=False)
 
     @staticmethod
     def extract_years(filename, only_start=False):

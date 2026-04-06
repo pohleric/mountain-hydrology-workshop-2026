@@ -11,7 +11,7 @@
 time_difference_hours = 0
 
 # Arguments
-path = "/Users/pohle/Dropbox/Central_Asia/Fluorometer/2023/G354/data/"
+path = "/mnt/f/Dropbox/Institute/Fribourg/Teaching/mountain-hydrology-workshop-2026Fluorometer/2023/G354/data/"
 # For Windows it will be something like this:
 # path = "C:/summer_school_Suyek/data/"
 
