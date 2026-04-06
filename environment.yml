@@ -1,6 +1,7 @@
 name: hobo
 channels:
-  - defaults
+  - conda-forge
+  - nodefaults
 dependencies:
   - _libgcc_mutex=0.1=main
   - _openmp_mutex=5.1=1_gnu
@@ -140,4 +141,4 @@ dependencies:
       - webcolors==25.10.0
       - webencodings==0.5.1
       - websocket-client==1.9.0
-prefix: /home/jingheng/miniconda3/envs/hobo
+prefix: "/opt/conda"
