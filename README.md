@@ -9,7 +9,8 @@ Check the program in "Program Hydrology workshop 9.4-10.4.2026.pdf".
 
 The MS Teams links are:
 
-Day 1: https://teams.microsoft.com/meet/385898353110236?p=OeN1l1bXJeZBWbnnel \\
+Day 1: https://teams.microsoft.com/meet/385898353110236?p=OeN1l1bXJeZBWbnnel
+
 Day 2: https://teams.microsoft.com/meet/315192613743296?p=nE2Lweb0CXjHfX7kGm
 
 # Семинар по горной гидрологии 2026
@@ -21,5 +22,6 @@ Day 2: https://teams.microsoft.com/meet/315192613743296?p=nE2Lweb0CXjHfX7kGm
 
 Ссылки на MS Teams:
 
-День 1: https://teams.microsoft.com/meet/385898353110236?p=OeN1l1bXJeZBWbnnel \\
+День 1: https://teams.microsoft.com/meet/385898353110236?p=OeN1l1bXJeZBWbnnel
+
 День 2: https://teams.microsoft.com/meet/315192613743296?p=nE2Lweb0CXjHfX7kGm
