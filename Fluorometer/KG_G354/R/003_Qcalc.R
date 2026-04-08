@@ -6,7 +6,7 @@ require(MESS)
 # - transforming data into readable format with signal in mV
 
 # Arguments
-path = "/Users/pohle/Dropbox/Fribourg/2026/workshops/CA-hydroworkshop/materials/Fluorometer/KG_G354"
+path = "~/work/mountain-hydrology-workshop-2026/Fluorometer/KG_G354"
 
 Standard = 50        # g/l - The concentration of the color tracer (Standard solution)
 TracerVolume = 0.1  # l - How many liters! were injected into the river?
