@@ -29,81 +29,6 @@ TracerVolume = .12
 sheet_name = '20210928_1600'    # Use this for all measurements
 TracerVolume = .12
 
-# ---- 2022-----
-# Input file (Excel)
-filename_excel = '2022 - Measurements_G354.xlsx'
-
-# ---- 
-sheet_name = '20220817_1100'    # Use this for all measurements
-TracerVolume = .02
-sheet_name = '20220817_1115'    # Use this for all measurements
-TracerVolume = .03
-sheet_name = '20220817_1440'    # Use this for all measurements
-TracerVolume = .2
-sheet_name = '20220817_1500'    # Use this for all measurements
-TracerVolume = .4
-sheet_name = '20220817_1700'    # Use this for all measurements
-TracerVolume = .3
-sheet_name = '20220817_1900'    # Use this for all measurements
-TracerVolume = .3
-sheet_name = '20220818_0900'    # Use this for all measurements
-TracerVolume = .1
-
-
-# ---- 2023 -----
-# Input file (Excel)
-filename_excel = '2023 - Measurements_G354.xlsx'
-
-# ---- 
-sheet_name = '20230713_0950'    # Use this for all measurements
-TracerVolume = .02
-sheet_name = '20230713_1020_repaired'    # Use this for all measurements
-TracerVolume = .05
-sheet_name = '20230713_1100'    # Use this for all measurements
-TracerVolume = .1
-sheet_name = '20230713_1110'    # Use this for all measurements
-TracerVolume = .2
-
-# ---- 2024 -----
-# Input file (Excel)
-filename_excel = '2024 - Measurements_G354.xlsx'
-
-# ---- 
-sheet_name = '20240820_0900'    # Use this for all measurements
-TracerVolume = .050
-sheet_name = '20240820_0933'    # Use this for all measurements
-TracerVolume = .0265
-sheet_name = '20240820_1000'    # Use this for all measurements
-TracerVolume = .025
-sheet_name = '20240820_1030'    # Use this for all measurements
-TracerVolume = .041
-sheet_name = '20240820_1103'    # Use this for all measurements
-TracerVolume = .031
-sheet_name = '20240820_1155_cleaned'
-TracerVolume = .041
-sheet_name = '20240820_1215_cleaned'
-TracerVolume = .052
-
-sheet_name = '20240820_1320'
-TracerVolume = 0.0565
-sheet_name = '20240820_1418_cleaned'
-TracerVolume = 0.1
-sheet_name = '20240820_1510_cleaned'
-TracerVolume = 0.2
-sheet_name = '20240820_1600_repair'
-TracerVolume = 0.2 # ??????????????????????????
-sheet_name = '20240820_1638'
-TracerVolume = 0.2 # ??????????????????????????
-sheet_name = '20240821_0615'
-TracerVolume = 0.150 
-
-sheet_name = '20240821_0630'
-TracerVolume = 0.07 
-sheet_name = '20240821_0700'
-TracerVolume = 0.07 
-sheet_name = '20240821_0730'
-TracerVolume = 0.07 
-
 
 
 # ------------ NO NEED TO CHANGE ANYTHING HEREAFTER --------------- #
@@ -120,7 +45,8 @@ source('../0_R-FUN/FUN_curve-processing-fixedCalibrationLiquid.R')
 #                header = F)
 library(lubridate)
 d_ = read_xlsx_(filename = filename_excel,sheet = sheet_name)
-# ---- remove NAs 
+
+# ---- remove NAs and visual check
 d_ = rm_nas(d_)
 plot(d_$X1, d_$X4, type='l')
 require(zoo)
