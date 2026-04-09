@@ -1,2 +1,7 @@
 - Add tracer method with variable cailibration liquid amounts
+- walk through example:
+-- transform binary to mV
+-- Excel prep discharge (FL30)
+-- Excel prep water level (theory showcase)
+
 
