@@ -10,23 +10,24 @@ path = "~/work/mountain-hydrology-workshop-2026/Fluorometer/KG_G354"
 
 Standard = 50        # g/l - The concentration of the color tracer (Standard solution)
 TracerVolume = 0.1  # l - How many liters! were injected into the river?
+# bucketvolume is FIXED to 5 L
 
 # ---- 2021 -----
 # Input file (Excel)
 filename_excel = '2021 - Measurements_G354.xlsx'
 
 # ---- 
-sheet_name = '20210928_1052'    # Use this for all measurements
+sheet_name = '20210928_1052'    
 TracerVolume = .02
-sheet_name = '20210928_1220_cleaned'    # Use this for all measurements
+sheet_name = '20210928_1220_cleaned'
 TracerVolume = .025
-sheet_name = '20210928_1310'    # Use this for all measurements
+sheet_name = '20210928_1310'    
 TracerVolume = .04
-sheet_name = '20210928_1409'    # Use this for all measurements
+sheet_name = '20210928_1409'    
 TracerVolume = .06
-sheet_name = '20210928_1510_cleaned'    # Use this for all measurements
+sheet_name = '20210928_1510_cleaned'
 TracerVolume = .12
-sheet_name = '20210928_1600'    # Use this for all measurements
+sheet_name = '20210928_1600'  
 TracerVolume = .12
 
 
