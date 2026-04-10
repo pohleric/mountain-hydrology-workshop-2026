@@ -1,7 +1,7 @@
 - Add tracer method with variable cailibration liquid amounts
 - walk through example:
 
-
+-- practical "discharge analysis" V2 needed (variable calibration amounts)
 -- Excel prep water level (theory showcase)
 
 - References (main doc - 09 / 10 )
