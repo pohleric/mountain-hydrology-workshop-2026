@@ -30,4 +30,4 @@ head(data_in)
 plot(data_in$date,data_in$Tracer1, type='l', xlab='Date', ylab='Signal [mV]')
 
 # write data (mV and normal CSV format)
-write.table(aaa,file = paste0(path,filename_mV),quote = F, row.names = F)
+write.table(data_in,file = paste0(path,filename_mV),quote = F, row.names = F)
